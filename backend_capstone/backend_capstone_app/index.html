@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .highlight {
+            background-color: #ff0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="textContainer">
+        <!-- Your text content here -->
+        <p>Please note that voice customization options are limited in the Web Speech API, and the degree of customization might vary depending on the browser and operating system. For more advanced customization.</p>
+    </div>
+    <button id="readButton">Read Text</button>
+
+    <script>
+        // const readButton = document.getElementById('readButton');
+        // const textContainer = document.getElementById('textContainer');
+        // const words = textContainer.innerText.split(' ');
+
+        // let currentWordIndex = 0;
+
+        // readButton.addEventListener('click', () => {
+        //     // Stop any ongoing speech
+        //     speechSynthesis.cancel();
+
+        //     // Reset textContainer's innerHTML
+        //     textContainer.innerHTML = words.map(word => `<span>${word}</span>`).join(' ');
+
+        //     // Start speech synthesis
+        //     speakNextWord();
+        // });
+        const readButton = document.getElementById('readButton');
+        const textContainer = document.getElementById('textContainer');
+        const words = textContainer.innerText.split(' '); // Split the text into words
+
+        let currentWordIndex = 0;
+
+        // Create a SpeechSynthesisUtterance instance
+        const speech = new SpeechSynthesisUtterance();
+
+        // Set the text to be read
+        speech.text = textContainer.innerText;
+
+        // Set the desired speech rate
+        speech.rate = 0.8; // Adjust this value to control the speed (0.5 for slower, 2.0 for faster, 1.0 for default)
+        speech.lang = 'en-UK';
+
+        // Listen for the onboundary event
+        speech.addEventListener('boundary', (event) => {
+            const wordIndex = event.charIndex;
+
+            // Highlight the currently spoken word
+            for (let i = 0; i < words.length; i++) {
+                if (i === currentWordIndex) {
+                    words[i] = `<span class="highlight">${words[i]}</span>`;
+                } else {
+                    words[i] = words[i];
+                }
+            }
+
+            textContainer.innerHTML = words.join(' ');
+
+            currentWordIndex = wordIndex;
+        });
+
+        // Listen for button click
+        readButton.addEventListener('click', () => {
+            // Stop any ongoing speech
+            speechSynthesis.cancel();
+
+            // Reset textContainer's innerHTML
+            textContainer.innerHTML = speech.text;
+
+            // Start speech synthesis
+            speechSynthesis.speak(speech);
+        });
+
+
+        // function speakNextWord() {
+        //     if (currentWordIndex >= words.length) {
+        //         return;
+        //     }
+
+        //     const speech = new SpeechSynthesisUtterance(words[currentWordIndex]);
+        //     speech.rate = 0.9;
+        //     speech.addEventListener('start', () => {
+        //         textContainer.children[currentWordIndex].classList.add('highlight');
+        //     });
+
+        //     speech.addEventListener('end', () => {
+        //         textContainer.children[currentWordIndex].classList.remove('highlight');
+        //         currentWordIndex++;
+        //         speakNextWord();
+        //     });
+
+        //     speechSynthesis.speak(speech);
+        // }
+
+    </script>
+</body>
+
+</html>
